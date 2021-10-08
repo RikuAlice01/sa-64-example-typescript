@@ -35,11 +35,13 @@ func SetupDatabase() {
 		FirstName:  "Chanwit",
     LastName:"Keawkasi",
 		Email: "chanwit@gmail.com",
+		Password: "81dc9bdb52d04dc20036dbd8313ed055",
 	})
   db.Model(&User{}).Create(&User{
 		FirstName:  "Sitthichai",
     LastName:"Siriritthikulchai",
     Email: "name@example.com",
+	Password: "81dc9bdb52d04dc20036dbd8313ed055",
   })
 
   var chanwit User

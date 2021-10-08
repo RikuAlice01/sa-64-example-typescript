@@ -31,12 +31,7 @@ func GetVideo(c *gin.Context) {
 		return
 	}
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", video.OwnerID).Scan(&video.Owner).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", video.OwnerID).Scan(&video.Owner).Error; err != nil {
+	if err := entity.DB().Raw("SELECT id,first_name,last_name,email,age,birth_day FROM users WHERE id = ?", video.OwnerID).Scan(&video.Owner).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -58,7 +53,7 @@ func ListVideos(c *gin.Context) {
 	}
 
 	for index, video := range videos {
-		if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", video.OwnerID).Scan(&videos[index].Owner).Error; err != nil {
+		if err := entity.DB().Raw("SELECT id,first_name,last_name,email,age,birth_day FROM users WHERE id = ?", video.OwnerID).Scan(&videos[index].Owner).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}

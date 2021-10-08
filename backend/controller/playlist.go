@@ -30,7 +30,7 @@ func GetPlaylist(c *gin.Context) {
 		return
 	}
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlist.Owner).Error; err != nil {
+	if err := entity.DB().Raw("SELECT id,first_name,last_name,email,age,birth_day FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlist.Owner).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -53,7 +53,7 @@ func ListPlaylists(c *gin.Context) {
 
 	for index, playlist := range playlists {
 
-		if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlists[index].Owner).Error; err != nil {
+		if err := entity.DB().Raw("SELECT id,first_name,last_name,email,age,birth_day FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlists[index].Owner).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
