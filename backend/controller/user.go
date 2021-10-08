@@ -59,7 +59,7 @@ func GetUser(c *gin.Context) {
 }
 
 
-// GET /login
+// POST /login
 func Userlogin(c *gin.Context) {
 	var user entity.User
 
@@ -89,7 +89,7 @@ func Userlogin(c *gin.Context) {
 	}
 }
 
-// GET /login
+// POST /login
 func Userlogout(c *gin.Context) {
 	var user entity.User
 
