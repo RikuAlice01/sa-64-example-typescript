@@ -33,8 +33,8 @@ func main() {
 	r.GET("/user/:id", controller.GetUser)
 	r.POST("/users", controller.CreateUser)
 	r.PATCH("/users", controller.UpdateUser)
-	r.PATCH("/userlogin", controller.Userlogin)
-	r.PATCH("/userlogout", controller.Userlogout)
+	r.GET("/userlogin", controller.Userlogin)
+	r.GET("/userlogout", controller.Userlogout)
 	r.DELETE("/users/:id", controller.DeleteUser)
 
 	// Video Routes

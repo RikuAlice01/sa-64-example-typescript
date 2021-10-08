@@ -59,8 +59,7 @@ func GetUser(c *gin.Context) {
 }
 
 
-// PATCH /login
-// patch login
+// GET /login
 func Userlogin(c *gin.Context) {
 	var user entity.User
 
@@ -90,8 +89,7 @@ func Userlogin(c *gin.Context) {
 	}
 }
 
-// PATCH /login
-// patch login
+// GET /login
 func Userlogout(c *gin.Context) {
 	var user entity.User
 
