@@ -29,6 +29,11 @@ func GetResolution(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if err := entity.DB().Raw("SELECT * FROM watch_videos WHERE resolution_id = ?", resolution.ID).Scan(&resolution.WatchVideos).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
  
 	c.JSON(http.StatusOK, gin.H{"data": resolution})
 }
@@ -39,6 +44,15 @@ func ListResolutions(c *gin.Context) {
 	if err := entity.DB().Raw("SELECT * FROM resolutions").Scan(&resolutions).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	for index, resolution := range resolutions {
+
+		if err := entity.DB().Raw("SELECT * FROM watch_videos WHERE resolution_id = ?", resolution.ID).Scan(&resolutions[index].WatchVideos).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 	}
  
 	c.JSON(http.StatusOK, gin.H{"data": resolutions})

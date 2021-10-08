@@ -25,7 +25,17 @@ func CreatePlaylist(c *gin.Context) {
 func GetPlaylist(c *gin.Context) {
 	var playlist entity.Playlist
 	id := c.Param("id")
-	if err := entity.DB().Raw("SELECT * FROM playlist WHERE id = ?", id).Scan(&playlist).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM playlists WHERE id = ?", id).Scan(&playlist).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlist.Owner).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Raw("SELECT * FROM watch_videos WHERE playlist_id = ?", playlist.ID).Scan(&playlist.WatchVideos).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -39,6 +49,20 @@ func ListPlaylists(c *gin.Context) {
 	if err := entity.DB().Raw("SELECT * FROM playlists").Scan(&playlists).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	for index, playlist := range playlists {
+
+		if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", playlist.OwnerID).Scan(&playlists[index].Owner).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	
+		if err := entity.DB().Raw("SELECT * FROM watch_videos WHERE playlist_id = ?", playlist.ID).Scan(&playlists[index].WatchVideos).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": playlists})

@@ -42,7 +42,7 @@ func SetupDatabase() {
     Email: "name@example.com",
   })
 
-	var chanwit User
+  var chanwit User
   var name User
 	db.Raw("SELECT * FROM users WHERE email = ?", "chanwit@gmail.com").Scan(&chanwit)
   db.Raw("SELECT * FROM users WHERE email = ?", "name@example.com").Scan(&name)

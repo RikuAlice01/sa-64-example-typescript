@@ -1,8 +1,8 @@
 package controller
- 
+
 import (
-	"github.com/virusman1/sa-64-example-typescript/entity"
 	"github.com/gin-gonic/gin"
+	"github.com/virusman1/sa-64-example-typescript/entity"
 	"net/http"
 )
 
@@ -14,6 +14,19 @@ func ListUsers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	for index, user := range users {
+		if err := entity.DB().Raw("SELECT * FROM playlists WHERE owner_id = ?", user.ID).Scan(&users[index].Playlists).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if err := entity.DB().Raw("SELECT * FROM videos WHERE owner_id = ?", user.ID).Scan(&users[index].Videos).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
 
@@ -23,6 +36,16 @@ func GetUser(c *gin.Context) {
 	var user entity.User
 	id := c.Param("id")
 	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", id).Scan(&user).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Raw("SELECT * FROM playlists WHERE owner_id = ?", user.ID).Scan(&user.Playlists).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Raw("SELECT * FROM videos WHERE owner_id = ?", user.ID).Scan(&user.Videos).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -75,10 +98,10 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 	/*
-	if err := entity.DB().Where("id = ?", id).Delete(&entity.User{}).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}*/
+		if err := entity.DB().Where("id = ?", id).Delete(&entity.User{}).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}*/
 
 	c.JSON(http.StatusOK, gin.H{"data": id})
 }
